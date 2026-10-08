@@ -84,7 +84,7 @@ S = pd.DataFrame(rows)
 R = np.corrcoef(np.array([ILD[run] for _, run, _ in ALL]))
 S.to_csv(OUT + "s3_conditions_stats.csv", index=False)
 print(S.round(1).to_string(index=False))
-print(pd.DataFrame(R, index=S.map, columns=S.map).round(2).to_string())
+print(pd.DataFrame(R, index=S["map"], columns=S["map"]).round(2).to_string())
 
 # ---------------- figure ----------------
 from matplotlib.backends.backend_pdf import PdfPages
@@ -168,7 +168,7 @@ for a_, b_ in pairs:                               # ILD strip directly under it
 for f_ in (fig1, fig2):
     HS.check(f_)
 with PdfPages(OUT + "FigureS3_conditions.pdf") as pp:      # two pages: a-f, g-h
-    pp.savefig(fig1, dpi=600); pp.savefig(fig2, dpi=600)
+    pp.savefig(fig1, dpi=300); pp.savefig(fig2, dpi=300)          # maps resampled at 300 dpi (above their native resolution); 600 dpi gave a 12.7 MB PDF
 fig1.savefig(OUT + "FigureS3_conditions.png", dpi=300)
 fig2.savefig(OUT + "FigureS3_conditions_p2.png", dpi=300)
 print("saved")
