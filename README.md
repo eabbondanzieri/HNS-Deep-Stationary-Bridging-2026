@@ -48,7 +48,7 @@ download them into the same tree (see [DATA.md](DATA.md)) or point `HNS_ROOT` at
 | Supplementary Note 2 (hns-PAmCherry looping) | `Bactoloops/tools/common_depth_maps.py`, `Bactoloops/updated figures/figure_temp_pamcherry_common.py` |
 | Supplementary Methods 1 (robustness) | `Bactoloops/iced_matrix_conversion/wt96_multires.py`, `tools/make_runs_multires.py`, `tools/multires_stats.py` |
 | numbers in the text | `Bactoloops/tools/manuscript_numbers.py`, `anchor_enrichment.py`, `chin_chid_vs_loops.py` |
-| Source Data; Supplementary Dataset 1 | `Bactoloops/tools/make_source_data.py`; `Bactoloops/tools/make_supplementary_dataset1.py` |
+| Source Data; Supplementary Datasets 1 and 2 | `Bactoloops/tools/make_source_data.py`; `Bactoloops/tools/make_supplementary_dataset1.py`, `make_supplementary_dataset2.py` |
 
 Figs. 1, 4, 6 and 7 and Supplementary Figs. 1, 5 (other than the tracks), 6, 10, 11 and 13 show microscopy, Western blots,
 Hi-C maps prepared with the lab pipeline and a schematic; their code is in the repositories linked above.
@@ -57,7 +57,7 @@ Hi-C maps prepared with the lab pipeline and a schematic; their code is in the r
 
 ```bash
 conda env create -f environment.yml && conda activate hns-paper
-python run_all.py --list          # the 48 steps, in dependency order
+python run_all.py --list          # the 50 steps, in dependency order
 python run_all.py                 # everything (hours; the loop-caller comparison takes longest)
 python run_all.py --from "Fig. 2" # from a given step onwards
 python run_all.py --only "Fig. 3" "Supplementary Fig. 9"

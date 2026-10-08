@@ -53,8 +53,6 @@ MAPS = [("WT exp", "cWX2200_exp_Azure_10percent_Sau3A_rep1_10000_iced.tif", "wt_
         ("Lioy WT stat", "lioy_wt_stat_10000_iced.tif", "lioy_wt_stat"),
         ("Lioy WT stat rep1", "lioy_wt_stat_rep1_10000_iced.tif", "lioy_wt_stat_rep1"),
         ("Lioy WT stat avg", "lioy_wt_stat_repavg_10000_iced.tif", "lioy_wt_stat_repavg")]
-import os as _os   # the Lioy et al. 2018 maps (published 3C data; not part of the paper) are used only if present
-MAPS = [m for m in MAPS if not m[2].startswith("lioy") or _os.path.exists(IC + m[1])]
 rng = np.random.default_rng(0)
 r = np.arange(N)
 D = np.minimum(np.abs(r[:, None] - r[None, :]), N - np.abs(r[:, None] - r[None, :]))

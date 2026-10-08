@@ -77,8 +77,8 @@ ild_z = {name: zscore(ild_raw(name)) for _, _, name, _ in MAPS}   # TIFF order
 ild_z_genome = {k: v[[tiff_of(g) for g in range(N)]] for k, v in ild_z.items()}
 
 fig = plt.figure(figsize=HS.size(500, 600))
-outer = fig.add_gridspec(3, 1, height_ratios=[1.32, 0.78, 0.88], hspace=0.26,
-                         left=0.1, right=0.985, top=0.955, bottom=0.075)
+outer = fig.add_gridspec(4, 1, height_ratios=[1.22, 0.7, 0.85, 0.5], hspace=0.3,
+                         left=0.1, right=0.985, top=0.96, bottom=0.03)
 
 
 def letter(ax, s, dx=-0.04, dy=1.02):
@@ -154,6 +154,7 @@ letter(ax, "d", dx=-0.22, dy=0.98)
 # ---------------- e, f: circular loop diagrams; g: ILD vs ChIP ----------------
 gB = outer[2].subgridspec(1, 4, wspace=0.25, width_ratios=[1, 1, 0.85, 0.85])
 circ_axes = []
+ROW_EH = []                          # panels e-h: letters and titles aligned on one row (after layout)
 R_IN, R_OUT = 1.0, 1.1
 loops = {name: pd.read_csv(ROOT + f"FIJI_output/loop_calls_{name}.csv") for name in ["wt_Exp", "wt_96h_repavg"]}
 import sys as _sys
@@ -198,7 +199,7 @@ for c, (L_, title, name, ring, ring_lab, colour) in enumerate(
     ax.set_aspect("equal"); ax.axis("off")
     ax.set_title(title, fontsize=HS.TITLE, pad=0)
     print(f"{title}: {len(Lp)} loops; ring {ring_lab}; mean anchor z {zmean:.2f}")
-    letter(ax, L_, dx=0.08, dy=1.0)
+    letter(ax, L_, dx=0.08, dy=1.0); ROW_EH.append(ax)
 
 SC = [("g", "WT exp", chip["mchexp"], ild_z_genome["wt_Exp"], MAPS[0][3], "ChIP-seq z\n(anti-mCherry)"),
       ("h", "WT 96 h", chip["hns96"], ild_z_genome["wt_96h_repavg"], MAPS[1][3], "ChIP-seq z\n(anti-H-NS)")]
@@ -222,28 +223,54 @@ for c, (L, lab, x, y, colour, xlab) in enumerate(SC):
         ax.set_yticklabels([])
     ax.set_box_aspect(1)          # boxed: all four spines kept
     ax.grid(color=GRID, lw=0.4); ax.set_axisbelow(True)
-    letter(ax, L, dx=-0.3 if c == 0 else -0.08, dy=1.0)
+    letter(ax, L, dx=-0.3 if c == 0 else -0.08, dy=1.0); ROW_EH.append(ax)
 
-# arc key, centred under e and f
-fig.canvas.draw()
-pe, pf = circ_axes[0].get_position(), circ_axes[1].get_position()
-kx0, kx1 = pe.x0 + 0.25 * pe.width, pf.x1 - 0.25 * pf.width
-kax = fig.add_axes([kx0, pe.y0 - 0.028, kx1 - kx0, 0.02])
+# ---------------- i: cartoon (moved from Fig. 1g; vector drawing Fig2i_cartoon.pdf placed into the PDF below) ----------------
+gI = outer[3].subgridspec(1, 3, width_ratios=[0.95, 1, 1], wspace=0.08)
+iax = fig.add_subplot(gI[0, 1:3]); iax.axis("off")
+CARTOON = OUT + "Fig2i_cartoon.pdf"
+letter(iax, "i", dx=0.0, dy=0.92)
+
+# arc key for e and f, directly under them (left of the cartoon)
+kax = fig.add_subplot(gI[0, 0])
+kax.text(0.5, 0.97, "integrated excess\nabove baseline (e, f)", ha="center", va="top", fontsize=HS.BASE)
 for i, v in enumerate([0.0, 0.5, 1.0, 1.5, 2.0]):
-    f = (v - EX_MIN) / (EX_MAX - EX_MIN)
-    kax.plot([i + 0.1, i + 0.9], [0.62, 0.62], color="#c8102e", lw=0.3 + 1.9 * f, alpha=0.12 + 0.88 * f,
-             solid_capstyle="round")
-    kax.text(i + 0.5, 0.05, {0.0: "≤0", 2.0: "≥2%"}.get(v, f"{v:g}"), ha="center", va="top", fontsize=HS.BASE)
-kax.text(-0.15, 0.62, "Integrated excess\nabove baseline", ha="right", va="center", fontsize=HS.BASE)
-kax.set_xlim(0, 5); kax.set_ylim(0, 1); kax.axis("off")
+    f = (v - EX_MIN) / (EX_MAX - EX_MIN); y = 0.6 - i * 0.14
+    kax.plot([0.22, 0.58], [y, y], color="#c8102e", lw=0.3 + 1.9 * f, alpha=0.12 + 0.88 * f, solid_capstyle="round")
+    kax.text(0.64, y, {0.0: "≤0", 2.0: "≥2%"}.get(v, f"{v:g}"), ha="left", va="center", fontsize=HS.BASE)
+kax.set_xlim(0, 1); kax.set_ylim(0, 1); kax.axis("off")
 
 fig.canvas.draw()                        # align each ILD track with its (square) map, bin for bin
 for ax_map, ax_ild in pairs:
     p, q = ax_map.get_position(), ax_ild.get_position()
     ax_ild.set_position([p.x0, q.y0, p.width, q.height])
+fig.canvas.draw()                        # e-h: panel letters on one row (titles stay with their panels)
+_inv = fig.transFigure.inverted()
+_lets = [[t for t in ax.texts if t.get_fontweight() == "bold" and t.get_text() in "efgh"][0] for ax in ROW_EH]
+_fy = lambda ax, art: _inv.transform(ax.transAxes.transform(art.get_position()))
+y_let = max(_fy(ax, t)[1] for ax, t in zip(ROW_EH, _lets))
+for ax, t in zip(ROW_EH, _lets):
+    x_ = _fy(ax, t)[0]; t.set_transform(fig.transFigure); t.set_position((x_, y_let))
+import pymupdf                           # noqa: E402  places the vector cartoon (panel i) into the figure PDF
+cart = pymupdf.open(CARTOON); cw, ch = cart[0].rect.width, cart[0].rect.height
+W, H = fig.get_size_inches() * 72
+p = iax.get_position()
+TITLE_PT = 14                                                     # room above the cells for the 10-pt titles
+x0, x1, y_top, y_bot = p.x0 * W, p.x1 * W, (1 - p.y1) * H + TITLE_PT, (1 - p.y0) * H
+s_ = min((x1 - x0) / cw, (y_bot - y_top) / ch)                    # scale, aspect kept
+w_, h_ = cw * s_, ch * s_; cx_ = (x0 + x1) / 2
+RECT = pymupdf.Rect(cx_ - w_ / 2, y_top, cx_ + w_ / 2, y_top + h_)
+for k, ttl in enumerate(["WT 96 h", "Δ$\\it{hns}$ 96 h"]):         # one title over each cell (cells fill the left and right halves)
+    fig.text((RECT.x0 + w_ * (0.25 + 0.5 * k)) / W, 1 - (RECT.y0 - 2) / H, ttl, ha="center", va="bottom", fontsize=HS.TITLE)
 HS.check(fig)
-fig.savefig(OUT + "Figure2.pdf")
-fig.savefig(OUT + "Figure2.png", dpi=300)
+fig.savefig(OUT + "_Figure2_without_cartoon.pdf")
+doc = pymupdf.open(OUT + "_Figure2_without_cartoon.pdf")
+doc[0].show_pdf_page(RECT, cart, 0, keep_proportion=True)
+doc[0].insert_text((RECT.x0 + w_ * 0.075, RECT.y0 + h_ * 0.27), "H-NS", fontsize=HS.BASE, color=(0.18, 0.49, 0.2),
+                   fontname="ArialHNS", fontfile="/System/Library/Fonts/Supplemental/Arial.ttf")   # over the cell, as in the original
+doc.save(OUT + "Figure2.pdf", garbage=3, deflate=True)
+doc[0].get_pixmap(dpi=300).save(OUT + "Figure2.png")
+print(f"panel i: cartoon {cw:.0f} x {ch:.0f} pt placed at {w_:.0f} x {h_:.0f} pt (scale {s_:.2f})")
 for lab, x, y in [("96h vs anti-H-NS 96h", chip["hns96"], ild_z_genome["wt_96h_repavg"]),
                   ("96h vs anti-mCherry 96h", chip["mch96"], ild_z_genome["wt_96h_repavg"]),
                   ("exp vs anti-mCherry exp", chip["mchexp"], ild_z_genome["wt_Exp"])]:

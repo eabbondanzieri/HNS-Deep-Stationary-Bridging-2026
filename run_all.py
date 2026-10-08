@@ -61,6 +61,7 @@ STEPS = [  # (name, folder, command)
     ("Supplementary Fig. 5 tracks", "Bactoloops/tools", [PY, "s5_tracks.py"]),
     ("numbers in the text", "Bactoloops/tools", [PY, "manuscript_numbers.py"]),
     ("Supplementary Dataset 1", "Bactoloops/tools", [PY, "make_supplementary_dataset1.py"]),
+    ("Supplementary Dataset 2", "Bactoloops/tools", [PY, "make_supplementary_dataset2.py"]),
     ("Source Data", "Bactoloops/tools", [PY, "make_source_data.py"]),
 ]
 ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
