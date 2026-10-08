@@ -1,0 +1,20 @@
+# conda env create -f environment.yml && conda activate hns-paper
+# Figures use Arial (installed with most systems; otherwise matplotlib falls back to its default font).
+name: hns-paper
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - tifffile
+  - numba
+  - openpyxl
+  - cooler
+  - pybigwig
+  - r-base
+  - bioconductor-deseq2
+  - bioconductor-apeglm
