@@ -73,6 +73,12 @@ calls; `--engine fiji` runs the macro itself (set `FIJI=/path/to/fiji`). The mul
 Chromosight and Mustache (`LOOPCOMPARE_BIN`), HiCExplorer and cooler (`HICEXPLORER_BIN`, `HICEXPLORER_PYTHON`), Peakachu with its
 pretrained 10-kb model (`PEAKACHU_BIN`), and the Juicer tools and SIP jars in `Bactoloops/Comparisons/tools/` (see DATA.md).
 
+## Earlier version
+
+`previous_submission/HiC_PeakFindingAlgorithm.ijm` is the macro posted with the first submission (integrated loop density
+only, before loop calling and the circular treatment of the map). It is kept for reference; the analysis uses the current
+version.
+
 ## License
 
 MIT (see `LICENSE`).
