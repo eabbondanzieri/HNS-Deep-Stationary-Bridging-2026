@@ -2,7 +2,7 @@
 (Panels i-m of the previous Supplementary Fig. 9, moved to the main text on 2026-10-06.)
 
   a  genome tracks (z-scores, 10-kb bins): WT 96 h ILD, anti-H-NS ChIP-seq (96 h), and the density (bp per bin) of the
-     exponential-phase CHIDs and CHINs of Gavrilov, Shamovsky et al. 2025 (Nudler CHIN paper/opcidsRenamed.xlsx, lab
+     exponential-phase CHINs, CHIDs and OPCIDs of Gavrilov, Shamovsky et al. 2025 (Nudler CHIN paper/opcidsRenamed.xlsx, lab
      genome); correlations in ../chin_chid_vs_loops.py
   b  aggregate contact maps (log2 O/E, balanced 500-bp maps from full valid pairs without the 5-kb cutoff) around CHINs >= 2 kb,
      centred on the CHIN centre and rescaled by CHIN length (ends at -1, +1; Nudler CHIN paper/scaled_pileups.py), averaged over
@@ -78,7 +78,7 @@ def letter(ax, s, dx=-0.08, dy=1.02):
 
 
 fig = plt.figure(figsize=HS.size(500, 520))
-outer = fig.add_gridspec(3, 1, height_ratios=[0.6, 0.5, 1.0], hspace=0.42, left=0.1, right=0.985, top=0.965, bottom=0.115)
+outer = fig.add_gridspec(3, 1, height_ratios=[0.72, 0.5, 1.0], hspace=0.42, left=0.1, right=0.985, top=0.965, bottom=0.115)
 _TR, _PG, _ROW = 0, 1, 2
 # a: exponential-phase CHIDs / CHINs vs deep-stationary loops and H-NS
 X = pd.read_excel(ROOT + "Nudler CHIN paper/opcidsRenamed.xlsx", 0)
@@ -97,17 +97,19 @@ _c = pd.read_csv(ROOT + "ChIP-seq_data/zscore_wt_96h_10kb.csv"); _chip = np.zero
 _chip[(_c.start_bp // 10000).astype(int) % N] = np.nan_to_num(_c.zscore.values)
 to_tiff = lambda g_arr: g_arr[(RC - 1 + np.arange(N)) % N]                                           # genome order -> TIFF order
 TRK = [("Hi-C ILD, WT 96 h", _z(_ild), "#000000"), ("H-NS ChIP-seq, 96 h", to_tiff(_z(_chip)), "#c0392b"),
+       ("CHIN density, exp", to_tiff(_z(_dens(X[X.type == "CHIN"]))), "#2e7d32"),
        ("CHID density, exp", to_tiff(_z(_dens(X[X.type == "CHID"]))), "#6a2c91"),
-       ("CHIN density, exp", to_tiff(_z(_dens(X[X.type == "CHIN"]))), "#2e7d32")]
+       ("OPCID density, exp", to_tiff(_z(_dens(X[X.type == "OPCID"]))), "#d4780f")]      # in the order the text discusses them
 ax = fig.add_subplot(outer[_TR])
 STEP = 7
 for k, (lab, v, col) in enumerate(TRK):
     ax.plot(np.arange(N) + 0.5, np.clip(v, -2, 9) - k * STEP, color=col, lw=0.6)
     ax.text(-6, -k * STEP + 1, lab, color=col, fontsize=HS.BASE, ha="right", va="center")
-ax.set_xlim(0, N); ax.set_ylim(-3 * STEP - 3, 9.5); ax.set_yticks([])
+NT = len(TRK)
+ax.set_xlim(0, N); ax.set_ylim(-(NT - 1) * STEP - 3, 9.5); ax.set_yticks([])
 ax.set_xticks(TICK_POS); ax.set_xticklabels([3670, 0, 1000, 2000, 3000]); ax.set_xlabel("Genome position (kb)", fontsize=HS.BASE)
-ax.plot([N + 4, N + 4], [-3 * STEP, -3 * STEP + 5], color="#1f1f1e", lw=0.9, clip_on=False)
-ax.text(N + 7, -3 * STEP + 2.5, "5 z", fontsize=HS.BASE, va="center", ha="left")
+ax.plot([N + 4, N + 4], [-(NT - 1) * STEP, -(NT - 1) * STEP + 5], color="#1f1f1e", lw=0.9, clip_on=False)
+ax.text(N + 7, -(NT - 1) * STEP + 2.5, "5 z", fontsize=HS.BASE, va="center", ha="left")
 fig.canvas.draw()
 p_ = ax.get_position(); ax.set_position([0.25, p_.y0, 0.69, p_.height])                          # room for the track labels
 letter(ax, "a", dx=-0.3)
