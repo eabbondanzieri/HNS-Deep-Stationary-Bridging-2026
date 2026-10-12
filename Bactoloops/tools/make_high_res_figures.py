@@ -71,6 +71,6 @@ for script, src, (folder, name), label in FIGS:
     run(script, patched=True)
     os.makedirs(PU + folder + "/high_res", exist_ok=True)
     dst = PU + folder + f"/high_res/{name}_high_res.pdf"
-    subprocess.run(["swift", TOOLS + "add_label_pdf.swift", B + src, dst, label], check=True, capture_output=True)   # Arial Bold label
+    subprocess.run(["python3", TOOLS + "add_label_pdf.py", B + src, dst, label], check=True, capture_output=True)   # Arial Bold label, page not re-rendered
     print(f"{label}: {os.path.getsize(dst) / 1e6:.1f} MB -> {dst}")
     run(script, patched=False)                       # restore the regular (email-size) figure files
