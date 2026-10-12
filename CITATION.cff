@@ -1,9 +1,10 @@
 cff-version: 1.2.0
 message: "If you use this code, please cite the paper below."
-title: "Analysis code for: H-NS organizes genome-wide DNA looping linked to gene silencing in starved Escherichia coli"
+title: "Analysis code for: H-NS organizes genome-wide DNA looping and enhances gene silencing in starved Escherichia coli"
 type: software
 license: MIT
 repository-code: "https://github.com/eabbondanzieri/HNS-Deep-Stationary-Bridging-2026"
+doi: "10.5281/zenodo.23317911"
 authors:
   - family-names: Abbondanzieri
     given-names: Elio A.
@@ -15,7 +16,7 @@ authors:
     given-names: Xindan
 preferred-citation:
   type: article
-  title: "H-NS organizes genome-wide DNA looping linked to gene silencing in starved Escherichia coli"
+  title: "H-NS organizes genome-wide DNA looping and enhances gene silencing in starved Escherichia coli"
   authors:
     - family-names: Way
       given-names: Lindsey E.

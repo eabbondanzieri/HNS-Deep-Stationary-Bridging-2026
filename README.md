@@ -1,8 +1,10 @@
 # HNS-Deep-Stationary-Bridging-2026
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23317911.svg)](https://doi.org/10.5281/zenodo.23317911)
+
 Analysis code for
 
-> Way, L. E. *et al.* **H-NS organizes genome-wide DNA looping linked to gene silencing in starved *Escherichia coli*.**
+> Way, L. E. *et al.* **H-NS organizes genome-wide DNA looping and enhances gene silencing in starved *Escherichia coli*.**
 > bioRxiv 2025.10.14.682352 (2025); doi:10.1101/2025.10.14.682352.
 
 This repository holds the Hi-C, ChIP-seq and RNA-seq analyses and the figures made from them. The loop caller, **Bactoloops**,
@@ -79,6 +81,10 @@ pretrained 10-kb model (`PEAKACHU_BIN`), and the Juicer tools and SIP jars in `B
 `previous_submission/HiC_PeakFindingAlgorithm.ijm` is the macro posted with the first submission (integrated loop density
 only, before loop calling and the circular treatment of the map). It is kept for reference; the analysis uses the current
 version.
+
+## Citation
+
+This code: doi:[10.5281/zenodo.23317911](https://doi.org/10.5281/zenodo.23317911) (all versions); v1.0.0, the version used for the paper as resubmitted: doi:[10.5281/zenodo.23317912](https://doi.org/10.5281/zenodo.23317912). Please also cite the paper above.
 
 ## License
 
