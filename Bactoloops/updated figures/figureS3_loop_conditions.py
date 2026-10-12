@@ -168,6 +168,13 @@ fig1.canvas.draw()
 for a_, b_ in pairs:                               # ILD strip directly under its map
     p, q = a_.get_position(), b_.get_position()
     b_.set_position([p.x0, p.y0 - 0.008 - q.height, p.width, q.height])
+fig1.canvas.draw()                                 # g and h letters on one row (h's square matrix sits lower than g)
+_inv = fig1.transFigure.inverted()
+_L = {t.get_text(): (ax_, t) for ax_ in fig1.axes for t in ax_.texts if t.get_fontweight() == "bold" and t.get_text() in ("g", "h")}
+_fig_xy = lambda ax_, t: _inv.transform(ax_.transAxes.transform(t.get_position()))
+_yg = _fig_xy(*_L["g"])[1]
+_ax_h, _th = _L["h"]; _xh = _fig_xy(_ax_h, _th)[0]
+_th.set_transform(fig1.transFigure); _th.set_position((_xh, _yg))
 HS.check(fig1)
 if True:                                                   # one page: a-h
     fig1.savefig(OUT + "FigureS3_conditions.pdf", dpi=300)          # maps resampled at 300 dpi (above their native resolution); 600 dpi gave a 12.7 MB PDF
