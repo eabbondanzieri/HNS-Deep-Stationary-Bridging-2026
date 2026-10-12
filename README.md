@@ -26,16 +26,17 @@ download them into the same tree (see [DATA.md](DATA.md)) or point `HNS_ROOT` at
 | `Bactoloops/updated figures/` | Figs. 2, 3, 5 and Supplementary Figs. 2, 4, 7, 8, 9, 12; shared figure style (`house_style.py`) |
 | `Bactoloops/Comparisons/` | comparison with six published loop callers, including the rotation test (Supplementary Note 1, Supplementary Fig. 3) |
 | `Bactoloops/Nudler CHIN paper/` | short-range analysis of chromosomal hairpins (CHINs), hairpin domains (CHIDs) and OPCIDs from full valid pairs (Fig. 3) |
-| `Bactoloops/Dugar et al data/`, `Bactoloops/Supplemental_figure_Ecoli_vs_Bsub/`, `Bactoloops/CircularLoopArcs/` | reanalysis of *B. subtilis* Hi-C, Rok ChIP-seq and RNA-seq (Dugar et al. 2022); Supplementary Fig. 14 |
+| `Bactoloops/Dugar et al data/`, `Bactoloops/Supplemental_figure_Ecoli_vs_Bsub/`, `Bactoloops/CircularLoopArcs/` | reanalysis of *B. subtilis* Hi-C, Rok ChIP-seq, and RNA-seq (Dugar et al. 2022); Supplementary Fig. 15 |
 | `Bactoloops/` (top level) | shared statistics: exact rotation and circular-shift tests (`rotation_test.py`), baseline-corrected integrated excess (`excess_baseline.py`), H-NS at loop anchors, CHIN/CHID vs loops |
 
 ## Figures and scripts
 
 | figure | script (inputs made by) |
 |---|---|
-| Fig. 2 | `Bactoloops/updated figures/figure2.py` |
-| Fig. 3 | `Bactoloops/updated figures/figure3_hairpins.py` (`Nudler CHIN paper/scaled_pileups.py`, `scaled_stem_test.py`, `s9_fullpairs_stats.py`; `updated figures/hns_timecourse_analysis.py`; `chin_chid_vs_loops.py`) |
+| Fig. 2 | `Bactoloops/updated figures/figure2.py` (cell drawings in `Bactoloops/Cell cartoons/`) |
+| Fig. 3 | `Bactoloops/updated figures/figure3_hairpins.py` (drawings in `Cell cartoons/`; `Nudler CHIN paper/scaled_pileups.py`, `scaled_stem_test.py`, `s9_fullpairs_stats.py`; `updated figures/hns_timecourse_analysis.py`; `chin_chid_vs_loops.py`) |
 | Fig. 5 | `Bactoloops/updated figures/figure4.py` (file name from an earlier numbering; `Spike-In/rerun_raw_counts/rerun_deseq2.R`, `Spike-In/make_gene_positions.py`) |
+| Fig. 7 | `Bactoloops/updated figures/figure7.py` (cell drawings in `Bactoloops/Cell cartoons/`) |
 | Supplementary Fig. 2 | `Bactoloops/updated figures/figureS2_method.py` (`tools/s2_inputs.py`) |
 | Supplementary Fig. 3, Supplementary Note 1 | `Bactoloops/Comparisons/FigS_method_comparison.py` (`build_raw_cools.py`, `build_inputs.py`, `run_callers.sh`, `rotation_test/`, `compare_methods.py`) |
 | Supplementary Fig. 4 | `Bactoloops/updated figures/figureS3_loop_conditions.py` |
@@ -43,21 +44,21 @@ download them into the same tree (see [DATA.md](DATA.md)) or point `HNS_ROOT` at
 | Supplementary Fig. 7 | `Bactoloops/updated figures/figureS_hns_comparison.py` |
 | Supplementary Fig. 8 | `Bactoloops/updated figures/figureS6_chip_overlap.py` |
 | Supplementary Fig. 9 | `Bactoloops/updated figures/figureS7_timecourse.py` (`hns_timecourse_analysis.py`) |
-| Supplementary Fig. 12 | `Bactoloops/updated figures/figureS10_rnaseq.py` (`figure4.py` run with `CFU`, `OD` and `Count`) |
-| Supplementary Fig. 14 | `Bactoloops/Supplemental_figure_Ecoli_vs_Bsub/fig_supplement_ecoli_vs_bsub.py` (`CircularLoopArcs/circular_ecoli_vs_bsub.py`; `Dugar et al data/`) |
+| Supplementary Figs. 12 and 13 | `Bactoloops/updated figures/figureS10_rnaseq.py` (`figure4.py` run with `CFU`, `OD`, and `Count`) |
+| Supplementary Fig. 15 | `Bactoloops/Supplemental_figure_Ecoli_vs_Bsub/fig_supplement_ecoli_vs_bsub.py` (`CircularLoopArcs/circular_ecoli_vs_bsub.py`; `Dugar et al data/`) |
 | Supplementary Note 2 (hns-PAmCherry looping) | `Bactoloops/tools/common_depth_maps.py`, `Bactoloops/updated figures/figure_temp_pamcherry_common.py` |
 | Supplementary Methods 1 (robustness) | `Bactoloops/iced_matrix_conversion/wt96_multires.py`, `tools/make_runs_multires.py`, `tools/multires_stats.py` |
 | numbers in the text | `Bactoloops/tools/manuscript_numbers.py`, `anchor_enrichment.py`, `chin_chid_vs_loops.py` |
-| Source Data; Supplementary Datasets 1 and 2 | `Bactoloops/tools/make_source_data.py`; `Bactoloops/tools/make_supplementary_dataset1.py`, `make_supplementary_dataset2.py` |
+| Source Data; Supplementary Datasets 1 and 2; high-resolution figure copies | `Bactoloops/tools/make_source_data.py`; `Bactoloops/tools/make_supplementary_dataset1.py`, `make_supplementary_dataset2.py`; `make_high_res_figures.py` |
 
-Figs. 1, 4, 6 and 7 and Supplementary Figs. 1, 5 (other than the tracks), 6, 10, 11 and 13 show microscopy, Western blots,
-Hi-C maps prepared with the lab pipeline and a schematic; their code is in the repositories linked above.
+Figs. 1, 4, and 6 and Supplementary Figs. 1, 5 (other than the tracks), 6, 10, 11, and 14 show microscopy, Western blots,
+and Hi-C maps prepared with the lab pipeline; their code is in the repositories linked above.
 
 ## Running
 
 ```bash
 conda env create -f environment.yml && conda activate hns-paper
-python run_all.py --list          # the 50 steps, in dependency order
+python run_all.py --list          # the 52 steps, in dependency order
 python run_all.py                 # everything (hours; the loop-caller comparison takes longest)
 python run_all.py --from "Fig. 2" # from a given step onwards
 python run_all.py --only "Fig. 3" "Supplementary Fig. 9"

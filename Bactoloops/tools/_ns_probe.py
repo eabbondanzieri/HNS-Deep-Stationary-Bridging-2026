@@ -6,11 +6,17 @@ plt.savefig = lambda *a, **k: None
 def run(path, args=()):
     d = os.path.dirname(path); cwd = os.getcwd(); argv = sys.argv
     os.chdir(d); sys.argv = [path, *args]; sys.path.insert(0, d)
-    import io, contextlib
+    import io, contextlib, glob, shutil, tempfile
+    keep = tempfile.mkdtemp()                      # figure PDFs in the script's folder, restored if the run leaves them empty
+    saved = {p: shutil.copy2(p, keep) for p in glob.glob(os.path.join(d, "*.pdf")) if os.path.getsize(p) > 2000}
     try:
         with contextlib.redirect_stdout(io.StringIO()):
             ns = runpy.run_path(path, run_name="__main__")
     finally:
+        for p, c in saved.items():
+            if not os.path.exists(p) or os.path.getsize(p) < 2000:
+                shutil.copy2(c, p); print(f"_ns_probe: restored {os.path.basename(p)} (left empty by the run)", file=sys.stderr)
+        shutil.rmtree(keep, ignore_errors=True)
         os.chdir(cwd); sys.argv = argv; sys.path.remove(d)
     plt.close("all")
     return ns

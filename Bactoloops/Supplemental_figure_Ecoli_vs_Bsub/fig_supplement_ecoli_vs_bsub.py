@@ -488,7 +488,7 @@ letter(ax, "H", dx=-0.3)
 for f_ in (fig1, fig2):
     HS.check(f_)
 with PdfPages(OUT + OUT_NAME + ".pdf") as pp:              # two pages: a-b, c-h
-    pp.savefig(fig1); pp.savefig(fig2)
+    pp.savefig(fig1, dpi=300); pp.savefig(fig2, dpi=300)
 fig1.savefig(OUT + OUT_NAME + ".png", dpi=300)
 fig2.savefig(OUT + OUT_NAME + "_p2.png", dpi=300)
 

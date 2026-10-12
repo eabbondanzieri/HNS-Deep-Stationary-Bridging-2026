@@ -26,6 +26,7 @@ def _hns_root():
         d = _hns_os.path.dirname(d)
     return _hns_os.path.join(d, "")
 HNS_ROOT = _hns_root()
+import os
 import numpy as np
 import pandas as pd
 import tifffile
@@ -101,7 +102,9 @@ for c, (L, title, name, colour) in enumerate(MAPS):
         ax.set_ylabel("Genome position (kb)")
         for t in ax.get_yticklabels():
             t.set_rotation(90); t.set_va("center")
-    ax.set_title(title, fontsize=HS.TITLE, pad=4)
+    _lc = ROOT + f"FIJI_output/loop_calls_{name}.csv"
+    n_loops = len(pd.read_csv(_lc)) if os.path.getsize(_lc) > 2 else 0      # dhns 96 h: no loops, empty file
+    ax.set_title(f"{title} ({n_loops} loop{'' if n_loops == 1 else 's'})", fontsize=HS.TITLE, pad=4)
     letter(ax, L, dx=-0.14 if c == 0 else -0.04)
     box = dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.85)
     lbl = dict(style="italic", fontsize=HS.BASE, bbox=box)
@@ -228,7 +231,7 @@ for c, (L, lab, x, y, colour, xlab) in enumerate(SC):
 # ---------------- i: cartoon (moved from Fig. 1g; vector drawing Fig2i_cartoon.pdf placed into the PDF below) ----------------
 gI = outer[3].subgridspec(1, 3, width_ratios=[0.95, 1, 1], wspace=0.08)
 iax = fig.add_subplot(gI[0, 1:3]); iax.axis("off")
-CARTOON = OUT + "Fig2i_cartoon.pdf"
+CARTOONS = [ROOT + "Cell cartoons/Fig2_wt.pdf", ROOT + "Cell cartoons/Fig2_dhns.pdf"]   # redrawn cells (Xindan, 2026-10-11)
 letter(iax, "i", dx=0.0, dy=0.92)
 
 # arc key for e and f, directly under them (left of the cartoon)
@@ -252,25 +255,28 @@ y_let = max(_fy(ax, t)[1] for ax, t in zip(ROW_EH, _lets))
 for ax, t in zip(ROW_EH, _lets):
     x_ = _fy(ax, t)[0]; t.set_transform(fig.transFigure); t.set_position((x_, y_let))
 import pymupdf                           # noqa: E402  places the vector cartoon (panel i) into the figure PDF
-cart = pymupdf.open(CARTOON); cw, ch = cart[0].rect.width, cart[0].rect.height
+carts = [pymupdf.open(c) for c in CARTOONS]; cw, ch = carts[0][0].rect.width, carts[0][0].rect.height
 W, H = fig.get_size_inches() * 72
 p = iax.get_position()
 TITLE_PT = 14                                                     # room above the cells for the 10-pt titles
 x0, x1, y_top, y_bot = p.x0 * W, p.x1 * W, (1 - p.y1) * H + TITLE_PT, (1 - p.y0) * H
-s_ = min((x1 - x0) / cw, (y_bot - y_top) / ch)                    # scale, aspect kept
+GAP = 0.05                                                        # gap between the two cells, as a fraction of a cell's width
+s_ = min((x1 - x0) / (cw * (2 + GAP)), (y_bot - y_top) / ch)      # scale, aspect kept
 w_, h_ = cw * s_, ch * s_; cx_ = (x0 + x1) / 2
-RECT = pymupdf.Rect(cx_ - w_ / 2, y_top, cx_ + w_ / 2, y_top + h_)
-for k, ttl in enumerate(["WT 96 h", "Δ$\\it{hns}$ 96 h"]):         # one title over each cell (cells fill the left and right halves)
-    fig.text((RECT.x0 + w_ * (0.25 + 0.5 * k)) / W, 1 - (RECT.y0 - 2) / H, ttl, ha="center", va="bottom", fontsize=HS.TITLE)
+RECTS = [pymupdf.Rect(cx_ - w_ * (1 + GAP / 2) + k * w_ * (1 + GAP), y_top, cx_ - w_ * GAP / 2 + k * w_ * (1 + GAP), y_top + h_)
+         for k in range(2)]
+for R_, ttl in zip(RECTS, ["WT 96 h", "Δ$\\it{hns}$ 96 h"]):      # one title over each cell
+    fig.text((R_.x0 + R_.x1) / 2 / W, 1 - (R_.y0 - 2) / H, ttl, ha="center", va="bottom", fontsize=HS.TITLE)
 HS.check(fig)
-fig.savefig(OUT + "_Figure2_without_cartoon.pdf")
+fig.savefig(OUT + "_Figure2_without_cartoon.pdf", dpi=300)          # raster maps at 300 dpi (the default, 100 dpi, blurred a-c)
 doc = pymupdf.open(OUT + "_Figure2_without_cartoon.pdf")
-doc[0].show_pdf_page(RECT, cart, 0, keep_proportion=True)
-doc[0].insert_text((RECT.x0 + w_ * 0.075, RECT.y0 + h_ * 0.27), "H-NS", fontsize=HS.BASE, color=(0.18, 0.49, 0.2),
+for R_, c_ in zip(RECTS, carts):
+    doc[0].show_pdf_page(R_, c_, 0, keep_proportion=True)
+doc[0].insert_text((RECTS[0].x0 + w_ * 0.065, RECTS[0].y0 + h_ * 0.55), "H-NS", fontsize=HS.BASE, color=(0.18, 0.49, 0.2),
                    fontname="ArialHNS", fontfile="/System/Library/Fonts/Supplemental/Arial.ttf")   # over the cell, as in the original
 doc.save(OUT + "Figure2.pdf", garbage=3, deflate=True)
 doc[0].get_pixmap(dpi=300).save(OUT + "Figure2.png")
-print(f"panel i: cartoon {cw:.0f} x {ch:.0f} pt placed at {w_:.0f} x {h_:.0f} pt (scale {s_:.2f})")
+print(f"panel i: cells {cw:.0f} x {ch:.0f} pt placed at {w_:.0f} x {h_:.0f} pt each (scale {s_:.2f})")
 for lab, x, y in [("96h vs anti-H-NS 96h", chip["hns96"], ild_z_genome["wt_96h_repavg"]),
                   ("96h vs anti-mCherry 96h", chip["mch96"], ild_z_genome["wt_96h_repavg"]),
                   ("exp vs anti-mCherry exp", chip["mchexp"], ild_z_genome["wt_Exp"])]:

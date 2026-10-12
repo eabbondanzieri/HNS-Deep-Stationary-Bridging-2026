@@ -36,8 +36,8 @@ N, BIN, ORI = 461, 10000, 367
 RENAME = {"Fig 3b": "Fig 4b", "Fig 3c": "Fig 4c", "Fig 5b-WT": "Fig 6b-WT", "Fig 5b-dHNS": "Fig 6b-dHNS", "Fig 5c": "Fig 6c",
           "Supplementary Fig 8a": "Supplementary Fig 10a", "Supplementary Fig 8b": "Supplementary Fig 10b",
           "Supplementary Fig 8c": "Supplementary Fig 10c", "Supplementary Fig 9b-c": "Supplementary Fig 11b-c",
-          "Supplementary Fig 11a - WT": "Supplementary Fig 13a - WT", "Supplementary Fig 11a - delHNS": "Supplementary Fig 13a - delHNS",
-          "Supplementary Fig 11b": "Supplementary Fig 13b"}
+          "Supplementary Fig 11a - WT": "Supplementary Fig 14a - WT", "Supplementary Fig 11a - delHNS": "Supplementary Fig 14a - delHNS",
+          "Supplementary Fig 11b": "Supplementary Fig 14b"}
 SHEETS = {}                                       # name -> DataFrame, in figure order
 
 
@@ -252,11 +252,11 @@ add("Supplementary Fig 12c", pd.DataFrame({"genome_position_kb": gkb(np.arange(N
                                            "mean log2FC 96 h": np.round(ns["b9"], 4), "anti-H-NS ChIP z 96 h": np.round(ns["zbin"], 4)}))
 add("Supplementary Fig 12d", pd.DataFrame({"genome_position_kb": gkb(np.arange(N)), **{lab: np.round(v, 4) for lab, v, _ in ns["T"]}}))
 F = pd.concat([pd.read_csv(B + f"updated figures/fig4_summary_{n}.csv") for n in ("CFU", "OD", "Count")])
-add("Supplementary Fig 12e-h", F[["norm", "r_e", "p_e", "r_f", "p_f", "g_rna_mean", "g_rna_lo", "g_rna_hi", "g_rna_rot95", "g_rna_p",
+add("Supplementary Fig 13a-d", F[["norm", "r_e", "p_e", "r_f", "p_f", "g_rna_mean", "g_rna_lo", "g_rna_hi", "g_rna_rot95", "g_rna_p",
                                   "up_Exp", "down_Exp", "up_96h", "down_96h", "h_Exp", "h_Exp_lo", "h_Exp_hi", "h_96h", "h_96h_lo", "h_96h_hi",
                                   "h_diff", "h_diff_lo", "h_diff_hi", "h_diff_p"]].round(4))
 
-# ---------------------------------------------------------------- Supplementary Fig. 14 (E. coli vs B. subtilis)
+# ---------------------------------------------------------------- Supplementary Fig. 15 (E. coli vs B. subtilis; was 14)
 ns = run(B + "Supplemental_figure_Ecoli_vs_Bsub/fig_supplement_ecoli_vs_bsub.py")
 rows = []
 for sp in ("E. coli", "B. subtilis"):
@@ -266,21 +266,21 @@ for sp in ("E. coli", "B. subtilis"):
     rows.append(pd.DataFrame({"organism": sp, "anchor1_kb": Pm.min(1) * 10, "anchor2_kb": Pm.max(1) * 10,
                               "baseline-corrected integrated excess (%)": np.round(ex, 4),
                               "relative to dataset mean": np.round(ex / np.mean(ex), 4)}))
-add("Supplementary Fig 14b-c", pd.concat(rows))
+add("Supplementary Fig 15b-c", pd.concat(rows))
 rows = []
 for sp in ("E. coli", "B. subtilis"):
     Pp = ns["full"][sp][2]
     rows.append(Pp.assign(organism=sp, anchor1_kb=Pp.i * 10, anchor2_kb=Pp.j * 10, distance_kb=Pp.dist * 10)
                 [["organism", "anchor1_kb", "anchor2_kb", "distance_kb", "called", "oe", "null_med", "p95", "pct"]]
                 .rename(columns={"oe": "corrected_log2_OE", "null_med": "distance_matched_median", "p95": "distance_matched_95th", "pct": "percentile"}).round(4))
-add("Supplementary Fig 14d", pd.concat(rows))
+add("Supplementary Fig 15d", pd.concat(rows))
 rows = []
 for sp in ("E. coli", "B. subtilis"):
     per_loop, per_anchor = ns["eng"][sp]
     rows += [dict(organism=sp, unit="loop", value_pct=round(float(v), 4)) for v in per_loop]
     rows += [dict(organism=sp, unit="anchor", value_pct=round(float(v), 4)) for v in per_anchor]
-add("Supplementary Fig 14e", pd.DataFrame(rows))
-add("Supplementary Fig 14e summary", pd.DataFrame([dict(organism=sp, unit=u, relative_to_E_coli=round(v[0], 4), ci_lo=round(v[1], 4), ci_hi=round(v[2], 4))
+add("Supplementary Fig 15e", pd.DataFrame(rows))
+add("Supplementary Fig 15e summary", pd.DataFrame([dict(organism=sp, unit=u, relative_to_E_coli=round(v[0], 4), ci_lo=round(v[1], 4), ci_hi=round(v[2], 4))
                                                    for (sp, u), v in ns["rel_d"].items()]))
 rows = []
 for sp, chipf, n in (("E. coli", B + "ChIP-seq_data/zscore_wt_96h_10kb.csv", 461), ("B. subtilis", B + "Dugar et al data/rok_zscore_10kb.csv", 422)):
@@ -289,10 +289,24 @@ for sp, chipf, n in (("E. coli", B + "ChIP-seq_data/zscore_wt_96h_10kb.csv", 461
     gb = (il.genome_position_bp.values // BIN).astype(int) % n
     zz = np.full(n, np.nan); c = pd.read_csv(chipf); zz[(c.start_bp // BIN).values % n] = c.zscore.values
     rows.append(pd.DataFrame({"organism": sp, "genome_position_kb": gb * 10, "ILD": il.ILD_au.values, "ChIP_z": np.round(zz[gb], 4)}))
-add("Supplementary Fig 14f", pd.concat(rows))
-add("Supplementary Fig 14g", ns["SIL"].round(4))
-add("Supplementary Fig 14h", pd.read_csv(B + "Dugar et al data/rok_cluster_local.csv").rename(
+add("Supplementary Fig 15f", pd.concat(rows))
+add("Supplementary Fig 15g", ns["SIL"].round(4))
+add("Supplementary Fig 15h", pd.read_csv(B + "Dugar et al data/rok_cluster_local.csv").rename(
     columns={"bin": "genome_bin", "ex": "mean log2(drok/WT) +-50 kb, exp, minus genome mean", "st": "mean log2(drok/WT) +-50 kb, 22 h, minus genome mean"}).round(4))
+
+# ---------------------------------------------------------------- Figure 7 (top: loops, H-NS binding, silencing; figure7.py)
+ns = run(B + "updated figures/figure7.py")
+rows, lrows = [], []
+for P in ns["PHASES"]:
+    ph = "exp" if P["title"].startswith("Exp") else "96 h"
+    rows.append(pd.DataFrame({"growth_phase": ph, "genome_position_kb": gkb(np.arange(N)),
+                              "H-NS ChIP z (anti-mCherry), inner ring": np.round(P["chip"], 4),
+                              "H-NS silencing, log2(dhns/WT) relative to genome mean, outer ring": np.round(P["sil"], 4)}))
+    L = P["L"]; g1, g2 = L.genome_bin1.round().astype(int).values % N, L.genome_bin2.round().astype(int).values % N
+    lrows.append(pd.DataFrame({"growth_phase": ph, "anchor1_kb": gkb(np.minimum(g1, g2)), "anchor2_kb": gkb(np.maximum(g1, g2)),
+                               "baseline-corrected integrated excess (%)": np.round(L["excess"].values, 4)}))
+add("Fig 7 rings", pd.concat(rows))
+add("Fig 7 loops", pd.concat(lrows))
 
 # ---------------------------------------------------------------- write
 wb = openpyxl.load_workbook(SRC)
@@ -303,7 +317,7 @@ for name, df in SHEETS.items():
     ws.append([str(c) for c in df.columns])
     for row in df.itertuples(index=False):
         ws.append([None if (isinstance(v, float) and np.isnan(v)) else (v.item() if hasattr(v, "item") else v) for v in row])
-order = ["Fig 2", "Fig 3", "Fig 4", "Fig 5", "Fig 6", "Fig 7"] + [f"Supplementary Fig {i}" for i in range(1, 15)]
+order = ["Fig 2", "Fig 3", "Fig 4", "Fig 5", "Fig 6", "Fig 7"] + [f"Supplementary Fig {i}" for i in range(1, 16)]
 def key(t):
     for i, p in enumerate(order):
         if t.startswith(p) and (not p[-1].isdigit() or not t[len(p):len(p) + 1].isdigit()):
@@ -315,12 +329,15 @@ for r in [["Source Data for Way et al."],
           ["One sheet per figure panel (or panel group): a header row, then the plotted values."],
           ["Genome positions are 10-kb bin starts (kb) on the lab genome (W3110 NC_007779.1 minus 1,398,953-1,438,196; 4,607,088 bp); "
            "B. subtilis positions are on 168 (NC_000964.3)."],
-          ["Contact-map images (Fig. 1, Fig. 2a-c maps, Supplementary Figs. 1c, 2, 4a-f, 6c, 9a-e, 14a) are not repeated here: "
+          ["Contact-map images (Fig. 1, Fig. 2a-c maps, Supplementary Figs. 1c, 2, 4a-f, 6c, 9a-e, 15a) are not repeated here: "
            "the Hi-C data are deposited in GEO; the integrated loop density (ILD) tracks drawn under the maps are included."],
           ["Loop calls and anchors are also in Supplementary Dataset 1."],
           ["Supplementary Fig 5: 1-kb ChIP/input (each track divided by its total reads). The WT exponential-phase anti-H-NS track "
            "(Supplementary Fig 5a, left) was not available in the analysis folder and is not included."],
-          ["Renumbered 2026-10-06: Supplementary Fig 10a-c, 11b-c and 13a-b were Supplementary Fig 8, 9 and 11; Figs 4-6 were Figs 3-5 (Fig 3, H-NS hairpins, was Supplementary Fig 9i-m)."]]:
+          ["Supplementary Fig 4h: the correlation matrix sheet gives every pair of maps (the figure prints values only for WT exp and dhns 96 h)."],
+          ["Fig 3f and the lower part of Fig 7 are schematics (no data)."],
+          ["Renumbered 2026-10-06: Supplementary Fig 10a-c, 11b-c, and 13a-b were Supplementary Fig 8, 9, and 11; Figs 4-6 were Figs 3-5 (Fig 3, H-NS hairpins, was Supplementary Fig 9i-m)."],
+          ["Renumbered 2026-10-12: Supplementary Fig 12 was split into 12 (a-d) and 13 (the former 12e-h, now 13a-d); the former Supplementary Figs 13 and 14 are now 14 and 15."]]:
     note.append(r)
 wb.save(OUT)
 print(len(SHEETS), "new sheets;", len(wb.sheetnames), "sheets in all ->", OUT)

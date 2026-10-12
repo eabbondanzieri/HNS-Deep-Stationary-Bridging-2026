@@ -187,8 +187,8 @@ for j, (lab, a, b_) in enumerate(lines):
 # ---- e-g: Fig. 4 under the three DESeq2 normalizations ----
 NORMS = [("CFU", "CFU (Fig. 5)", INK), ("OD", "OD", "#7b6fb0"), ("Count", "Count", "#c9a227")]
 SM = {k: pd.read_csv(OUT + f"fig4_summary_{k}.csv").iloc[0] for k, _, _ in NORMS}
-fig = fig2 = plt.figure(figsize=HS.size(500, 470))             # page 2: e-h
-gEG = fig.add_gridspec(2, 2, wspace=0.45, hspace=0.42, left=0.12, right=0.98, top=0.88, bottom=0.1)
+fig = fig2 = plt.figure(figsize=HS.size(500, 480))             # Supplementary Fig. 13 (split from 12 by Xindan, 2026-10-11): a-d
+gEG = fig.add_gridspec(2, 2, wspace=0.45, hspace=0.42, left=0.12, right=0.98, top=0.83, bottom=0.1)
 dx = {"CFU": -0.22, "OD": 0, "Count": 0.22}
 
 ax = fig.add_subplot(gEG[0, 0])
@@ -204,10 +204,11 @@ ax.axhline(0, color=MUTED, lw=0.5, ls=":")
 ax.set_xticks(range(len(MEAS))); ax.set_xticklabels([m[2] for m in MEAS], fontsize=HS.BASE)
 ax.set_xlim(-0.55, len(MEAS) - 0.45); ax.set_ylim(0, 1.0)
 ax.set_ylabel("Pearson r with H-NS\nsilencing (10-kb bins, 96 h)")
-fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc="upper center", ncol=3, bbox_to_anchor=(0.55, 1.0),
-           title="DESeq2 normalization")
+leg = fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc="upper left", ncol=1, bbox_to_anchor=(0.1, 0.995),
+                 title="DESeq2 normalization method", alignment="left", handletextpad=0.2, labelspacing=0.3)
+leg.get_title().set_fontsize(HS.TITLE)
 ax.grid(axis="y", color=GRID, lw=0.4); ax.set_axisbelow(True)
-letter(ax, "e", dx=-0.2)
+letter(ax, "a", dx=-0.2)
 
 ax = fig.add_subplot(gEG[0, 1])
 for j, (k, lab, col) in enumerate(NORMS):
@@ -220,7 +221,7 @@ ax.set_xticks(range(3)); ax.set_xticklabels([n[0] for n in NORMS], fontsize=HS.B
 ax.set_xlim(-0.6, 2.6); ax.set_ylim(-0.3, 2.7)
 ax.set_ylabel("mean H-NS silencing z\nat loop anchors (96 h)")
 ax.grid(axis="y", color=GRID, lw=0.4); ax.set_axisbelow(True)
-letter(ax, "f", dx=-0.2)
+letter(ax, "b", dx=-0.2)
 
 ax = fig.add_subplot(gEG[1, 0])
 GRP = [("up_Exp", "exp\nup"), ("down_Exp", "exp\ndown"), ("up_96h", "96 h\nup"), ("down_96h", "96 h\ndown")]
@@ -233,7 +234,7 @@ ax.set_xticks(range(len(GRP))); ax.set_xticklabels([g[1] for g in GRP], fontsize
 ax.set_xlim(-0.55, len(GRP) - 0.45); ax.set_ylim(0, 3700)
 ax.set_ylabel("DE genes")
 ax.grid(axis="y", color=GRID, lw=0.4); ax.set_axisbelow(True)
-letter(ax, "g", dx=-0.2)
+letter(ax, "c", dx=-0.2)
 
 ax = fig.add_subplot(gEG[1, 1])
 for k, lab, col in NORMS:
@@ -249,12 +250,12 @@ ax.set_xticks([0, 1]); ax.set_xticklabels(["exp", "96 h"])
 ax.set_xlim(-0.5, 1.5); ax.set_ylim(-0.4, 4.1)
 ax.set_ylabel("silencing at bound genes\n(log$_2$, rel. to genome)")
 ax.grid(axis="y", color=GRID, lw=0.4); ax.set_axisbelow(True)
-letter(ax, "h", dx=-0.2)
+letter(ax, "d", dx=-0.2)
 
 for f_ in (fig1, fig2):
     HS.check(f_)
-with PdfPages(OUT + "FigureS10.pdf") as pp:                  # two pages: a-d, e-h
-    pp.savefig(fig1, dpi=600); pp.savefig(fig2, dpi=600)
+fig1.savefig(OUT + "FigureS10.pdf", dpi=600)                # Supplementary Fig. 12
+fig2.savefig(OUT + "FigureS10b.pdf", dpi=600)               # Supplementary Fig. 13 (was page 2, e-h)
 fig1.savefig(OUT + "FigureS10.png", dpi=300)
-fig2.savefig(OUT + "FigureS10_p2.png", dpi=300)
+fig2.savefig(OUT + "FigureS10b.png", dpi=300)
 print("saved")

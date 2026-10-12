@@ -88,8 +88,10 @@ print(pd.DataFrame(R, index=S["map"], columns=S["map"]).round(2).to_string())
 
 # ---------------- figure ----------------
 from matplotlib.backends.backend_pdf import PdfPages
-fig = fig1 = plt.figure(figsize=HS.size(500, 560))                 # page 1: maps a-f
-outer = fig.add_gridspec(2, 1, hspace=0.3, left=0.1, right=0.985, top=0.94, bottom=0.08)
+FIG_H = 600                                                        # one page, as Xindan's layout (2026-10-11)
+fig = fig1 = fig2 = plt.figure(figsize=HS.size(500, FIG_H))        # maps a-f, then g, h
+ALLG = fig.add_gridspec(3, 1, height_ratios=[1, 1, 1.2], hspace=0.36, left=0.1, right=0.9, top=0.95, bottom=0.085)
+outer = ALLG
 ildm = {run: ILD[run] - np.median(ILD[run]) for _, run, _ in PANELS}
 ymin = min(v.min() for v in ildm.values()) * 1.05
 ymax = max(v.max() for v in ildm.values()) * 1.05
@@ -117,8 +119,7 @@ for k, (lab, run, col) in enumerate(PANELS):
         ax2.set_yticklabels([])
     pairs.append((ax, ax2))
 
-fig = fig2 = plt.figure(figsize=HS.size(500, 300))                 # page 2: g, h
-bot = fig.add_gridspec(1, 2, wspace=0.45, width_ratios=[0.9, 1.1], left=0.09, right=0.93, top=0.92, bottom=0.25)
+bot = ALLG[2].subgridspec(1, 2, wspace=0.38, width_ratios=[0.8, 1.2])
 # g: loops called, matching WT 96 h or not
 ax = fig.add_subplot(bot[0, 0])
 order_g = [("WT exp", "wt_Exp"), ("WT 96 h", "wt_96h_repavg"), ("Δ$\\it{hns}$ 96 h", "HNSm_96h")] + \
@@ -135,7 +136,7 @@ ax.axvline(2.5, color=MUTED, lw=0.5, ls=":")
 ax.set_xticks(range(len(order_g)))
 ax.set_xticklabels([l + ("" if "96 h" in l or "exp" in l else " 96 h") for l, _ in order_g], rotation=45, ha="right",
                    rotation_mode="anchor", fontsize=HS.BASE)
-ax.set_xlim(-0.6, len(order_g) - 0.4); ax.set_ylim(0, S.loops.max() * 1.45)
+ax.set_xlim(-0.6, len(order_g) - 0.4); ax.set_ylim(0, S.loops.max() * 1.55)
 ax.set_ylabel("Loops called")
 from matplotlib.patches import Patch
 ax.legend(handles=[Patch(facecolor="#8a8a8a", edgecolor=INK, lw=0.3, label="at a WT 96 h loop"),
@@ -154,10 +155,12 @@ ax.set_xticklabels(labs, rotation=45, ha="right", rotation_mode="anchor", fontsi
 ax.set_yticklabels(labs, fontsize=HS.BASE)
 for i in range(len(ALL)):
     for j in range(len(ALL)):
-        ax.text(j, i, f"{R[i, j]:.2f}".replace("0.", ".").replace("-.00", ".00"), ha="center", va="center", fontsize=HS.BASE,
+        if (i < 7 and j < 7) or i == j:
+            continue                                   # 96 h block: colour only (as Xindan's layout); values in Source Data
+        ax.text(j, i, f"{R[i, j]:.2f}".replace("0.", ".").replace("-.00", ".00").replace("-", "\u2212"), ha="center", va="center", fontsize=HS.BASE,
                 color="white" if R[i, j] > 0.6 else INK)
 ax.axhline(6.5, color=INK, lw=0.8); ax.axvline(6.5, color=INK, lw=0.8)
-cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.02, ticks=[0, 0.5, 1]); cb.set_label("Pearson r of ILD", fontsize=HS.BASE)
+cb = fig.colorbar(im, ax=ax, fraction=0.05, pad=0.03, ticks=[0, 0.5, 1]); cb.set_label("Pearson r of ILD", fontsize=HS.BASE)
 cb.ax.tick_params(labelsize=HS.BASE)
 letter(ax, "h", dx=-0.3, dy=1.06)
 
@@ -165,10 +168,8 @@ fig1.canvas.draw()
 for a_, b_ in pairs:                               # ILD strip directly under its map
     p, q = a_.get_position(), b_.get_position()
     b_.set_position([p.x0, p.y0 - 0.008 - q.height, p.width, q.height])
-for f_ in (fig1, fig2):
-    HS.check(f_)
-with PdfPages(OUT + "FigureS3_conditions.pdf") as pp:      # two pages: a-f, g-h
-    pp.savefig(fig1, dpi=300); pp.savefig(fig2, dpi=300)          # maps resampled at 300 dpi (above their native resolution); 600 dpi gave a 12.7 MB PDF
+HS.check(fig1)
+if True:                                                   # one page: a-h
+    fig1.savefig(OUT + "FigureS3_conditions.pdf", dpi=300)          # maps resampled at 300 dpi (above their native resolution); 600 dpi gave a 12.7 MB PDF
 fig1.savefig(OUT + "FigureS3_conditions.png", dpi=300)
-fig2.savefig(OUT + "FigureS3_conditions_p2.png", dpi=300)
 print("saved")

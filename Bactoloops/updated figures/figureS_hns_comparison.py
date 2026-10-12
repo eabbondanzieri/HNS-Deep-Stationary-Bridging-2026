@@ -185,7 +185,7 @@ letter(ax, "h", dx=-0.32)
 ax = fig.add_subplot(bot[0, 1])
 for x, row in S.iterrows():
     if "_per_loop" not in row or not isinstance(row["_per_loop"], np.ndarray):
-        ax.text(x, 1.0, "no\nloops", ha="center", va="bottom", fontsize=HS.BASE, color=MUTED)
+        ax.text(x, 0.15, "no loops", ha="center", va="bottom", rotation=90, fontsize=HS.BASE, color=MUTED)   # vertical: fits its column
         continue
     v = row["_per_loop"]
     bp = ax.boxplot([v], positions=[x], widths=0.55, patch_artist=True, showfliers=False, whis=(0, 100),

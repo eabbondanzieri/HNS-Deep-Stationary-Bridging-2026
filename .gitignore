@@ -36,5 +36,6 @@ Bactoloops/Comparisons/rotation_test/inputs/
 Bactoloops/Comparisons/rotation_test/runs/
 Bactoloops/Comparisons/rotation_test/macros/
 
-# the Fig. 2i cartoon (vector drawing, an input to figure2.py)
-!Bactoloops/updated figures/Fig2i_cartoon.pdf
+
+# drawings read by figure2.py, figure3_hairpins.py and figure7.py (Xindan, 2026-10-11/12)
+!Bactoloops/Cell cartoons/*.pdf

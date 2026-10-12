@@ -47,22 +47,24 @@ STEPS = [  # (name, folder, command)
     # 4. figures, numbers, source data
     ("Fig. 2", UF, [PY, "figure2.py"]),
     ("Fig. 3", UF, [PY, "figure3_hairpins.py"]),
-    ("Fig. 5 (CFU; OD and Count for Supplementary Fig. 12)", UF, ["bash", "-c", f"for n in CFU OD Count; do {PY} figure4.py $n; done"]),
+    ("Fig. 5 (CFU; OD and Count for Supplementary Fig. 13)", UF, ["bash", "-c", f"for n in CFU OD Count; do {PY} figure4.py $n; done"]),
     ("Supplementary Fig. 2", UF, [PY, "figureS2_method.py", "A"]),
     ("Supplementary Fig. 3", CMP, [PY, "FigS_method_comparison.py"]),
     ("Supplementary Fig. 4", UF, [PY, "figureS3_loop_conditions.py"]),
     ("Supplementary Fig. 7", UF, [PY, "figureS_hns_comparison.py"]),
     ("Supplementary Fig. 8", UF, [PY, "figureS6_chip_overlap.py"]),
     ("Supplementary Fig. 9", UF, [PY, "figureS7_timecourse.py"]),
-    ("Supplementary Fig. 12", UF, [PY, "figureS10_rnaseq.py"]),
-    ("Supplementary Fig. 14b (circle panel)", "Bactoloops/CircularLoopArcs", [PY, "circular_ecoli_vs_bsub.py", "--metric", "integrated_excess", "--scale", "relative", "--min-confidence", "medium", "--panel"]),
-    ("Supplementary Fig. 14", SB, [PY, "fig_supplement_ecoli_vs_bsub.py"]),
+    ("Supplementary Figs. 12 and 13", UF, [PY, "figureS10_rnaseq.py"]),
+    ("Supplementary Fig. 15b (circle panel)", "Bactoloops/CircularLoopArcs", [PY, "circular_ecoli_vs_bsub.py", "--metric", "integrated_excess", "--scale", "relative", "--min-confidence", "medium", "--panel"]),
+    ("Supplementary Fig. 15", SB, [PY, "fig_supplement_ecoli_vs_bsub.py"]),
+    ("Fig. 7", UF, [PY, "figure7.py"]),
     ("Supplementary Note 2 (hns-PAmCherry)", UF, [PY, "figure_temp_pamcherry_common.py"]),
     ("Supplementary Fig. 5 tracks", "Bactoloops/tools", [PY, "s5_tracks.py"]),
     ("numbers in the text", "Bactoloops/tools", [PY, "manuscript_numbers.py"]),
     ("Supplementary Dataset 1", "Bactoloops/tools", [PY, "make_supplementary_dataset1.py"]),
     ("Supplementary Dataset 2", "Bactoloops/tools", [PY, "make_supplementary_dataset2.py"]),
     ("Source Data", "Bactoloops/tools", [PY, "make_source_data.py"]),
+    ("high-resolution figure copies", "Bactoloops/tools", [PY, "make_high_res_figures.py"]),
 ]
 ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
 ap.add_argument("--list", action="store_true"); ap.add_argument("--from", dest="start"); ap.add_argument("--only", nargs="*")

@@ -77,8 +77,10 @@ def letter(ax, s, dx=-0.08, dy=1.02):
     HS.letter(ax, s, dx, dy)
 
 
-fig = plt.figure(figsize=HS.size(500, 520))
-outer = fig.add_gridspec(3, 1, height_ratios=[0.72, 0.5, 1.0], hspace=0.42, left=0.1, right=0.985, top=0.965, bottom=0.115)
+FIG_H = 600                                   # pt; key above a (2026-10-11) and panel f, cells (Xindan, 2026-10-12)
+F_PT = 64                                     # height of panel f at the bottom
+fig = plt.figure(figsize=HS.size(500, FIG_H))
+outer = fig.add_gridspec(3, 1, height_ratios=[0.72, 0.5, 1.0], hspace=0.42, left=0.1, right=0.985, top=1 - 43 / FIG_H, bottom=(60 + F_PT) / FIG_H)
 _TR, _PG, _ROW = 0, 1, 2
 # a: exponential-phase CHIDs / CHINs vs deep-stationary loops and H-NS
 X = pd.read_excel(ROOT + "Nudler CHIN paper/opcidsRenamed.xlsx", 0)
@@ -113,6 +115,32 @@ ax.text(N + 7, -(NT - 1) * STEP + 2.5, "5 z", fontsize=HS.BASE, va="center", ha=
 fig.canvas.draw()
 p_ = ax.get_position(); ax.set_position([0.25, p_.y0, 0.69, p_.height])                          # room for the track labels
 letter(ax, "a", dx=-0.3)
+# key above panel a: a small sketch of each element type, its name and median length (Xindan, 2026-10-11)
+fig.canvas.draw()
+_pa = ax.get_position(); _y = _pa.y1 + 6 / FIG_H                    # baseline of the key, just above the tracks
+_xs = np.linspace(-0.5, 0.5, 200); _g = lambda c, w: np.exp(-((_xs - c) / w) ** 2)
+_t = np.linspace(0, 4 * np.pi, 400)
+ICONS = {"CHIN": (_xs, _g(0, 0.09)),                                                    # one hairpin
+         "CHID": (_xs, 0.55 * _g(-0.3, 0.07) + 1.0 * _g(0, 0.07) + 0.7 * _g(0.3, 0.07)),  # a cluster of hairpins
+         "OPCID": (np.r_[np.linspace(-0.55, -0.2, 20), 0.2 * np.cos(_t) + 0.09 * np.cos(4.3 * _t) + 0.02 * _t - 0.12,
+                         np.linspace(0.25, 0.55, 20)],                                     # a tangle with two tails
+                   np.r_[np.full(20, 0.1), 0.38 * np.sin(1.3 * _t) + 0.16 * np.sin(3.7 * _t) + 0.5, np.full(20, 0.1)])}
+KEY = [("CHIN", "CHIN (hairpin)", "#2e7d32", 0.0), ("CHID", "CHID (hairpin domain)", "#6a2c91", 0.33),
+       ("OPCID", "OPCID (highly transcribed operons)", "#d4780f", 0.66)]
+_x0 = 0.1                                                         # left edge of the track labels
+KEY_SLOTS = []
+for typ, name, col, fx in KEY:
+    med = (X[X.type == typ].e - X[X.type == typ].s).median() / 1000
+    xt = _x0 + fx * (_pa.x1 - _x0)
+    t_ = fig.text(xt, _y, f"{name}\nmedian {med:.1f} kb", ha="left", va="bottom", fontsize=HS.BASE, color=col, linespacing=1.15)
+    fig.canvas.draw()
+    bb = t_.get_window_extent().transformed(fig.transFigure.inverted())
+    iw = min(0.075, 0.985 - (bb.x1 + 0.008))                      # keep the sketch inside the figure
+    iax = fig.add_axes([bb.x1 + 0.008, _y - 2 / FIG_H, iw, 30 / FIG_H]); iax.axis("off")
+    KEY_SLOTS.append((typ, bb.x1 + 0.008, _y - 2 / FIG_H, iw, 30 / FIG_H))     # Xindan's vector drawing goes here (below)
+_la = [t for t in ax.texts if t.get_text() == "a" and t.get_fontweight() == "bold"][0]   # letter a: up to the key row
+_lx = fig.transFigure.inverted().transform(ax.transAxes.transform(_la.get_position()))[0]   # keep its x
+_la.set_transform(fig.transFigure); _la.set_position((_lx, _y + 24 / FIG_H)); _la.set_va("top")
 
 # b-e: short-range H-NS structure from full valid pairs (no 5-kb cutoff); replicates pooled (Nudler CHIN paper/s9_fullpairs_stats.py)
 NUD = ROOT + "Nudler CHIN paper/"
@@ -170,20 +198,49 @@ for (g1, g2, key) in [(0, 1, "WT exp vs dhns exp"), (3, 4, "WT 96 h vs dhns 96 h
     p_ = SC.loc[key, "p"]; y_ = 1.7 if g1 == 0 else 1.62
     ax.plot([g1, g1, g2, g2], [y_ * 0.985, y_, y_, y_ * 0.985], color="#1f1f1e", lw=0.6)
     ax.text((g1 + g2) / 2, y_ * 1.01, "**" if p_ < 0.01 else ("*" if p_ < 0.05 else "n.s."), ha="center", va="bottom", fontsize=HS.BASE)
-ax.set_title("hairpins (CHINs)", fontsize=HS.BASE, pad=3)
-letter(ax, "c", dx=-0.42)
+ax.set_title("CHINs", fontsize=HS.BASE, pad=3)
+letter(ax, "c", dx=-0.36)
 ax = fig.add_subplot(row[0, 1])
 dots(ax, "chid", "within / neighboring\nwindows", (0.75, 1.6), [0.8, 1, 1.2, 1.4])
-ax.set_title("hairpin domains\n(CHIDs)", fontsize=HS.BASE, pad=3)
+ax.set_title("CHIDs", fontsize=HS.BASE, pad=3)
 letter(ax, "d", dx=-0.42)
 ax = fig.add_subplot(row[0, 2])
 dots(ax, "opcid", "within / neighboring\nwindows", (0.85, 1.3), [0.9, 1, 1.1, 1.2])
-ax.set_title("operon domains\n(OPCIDs)", fontsize=HS.BASE, pad=3)
+ax.set_title("OPCIDs", fontsize=HS.BASE, pad=3)
 letter(ax, "e", dx=-0.42)
+# f: hairpins persist (cells drawn by Xindan; placed below as vector art). Positions in pt from the top-left of the figure,
+# taken from her layout (Paper Update/Figure_3_HNS_hairpins4.pdf, shifted by her page offset)
+F_TOP = FIG_H - 58                                 # top of the cells
+CELLS = [("WT exp", "Fig3_exp.pdf", 61), ("WT 96 h", "Fig3_96h.pdf", 243)]
+for ttl, _, x in CELLS:
+    fig.text((x + 51) / 500, 1 - (F_TOP - 3) / FIG_H, ttl, ha="center", va="bottom", fontsize=HS.TITLE)
+fig.text(200 / 500, 1 - (F_TOP + 7) / FIG_H, "hairpins persist", ha="center", va="top", fontsize=HS.TITLE)
+fig.text(200 / 500, 1 - (F_TOP + 31) / FIG_H, "→", ha="center", va="center", fontsize=16)
+fig.text(10 / 500, 1 - (F_TOP - 16) / FIG_H, "f", fontsize=HS.LETTER, fontweight="bold", ha="left", va="top")
 fig.canvas.draw()
 _p = paxes[-1].get_position(); _c = CBFIX.get_position()
 CBFIX.set_position([_c.x0, _p.y0, _c.width, _p.height])
 HS.check(fig)
-fig.savefig(OUT + "Figure3_hairpins.pdf", dpi=600)
-fig.savefig(OUT + "Figure3_hairpins.png", dpi=300)
+fig.savefig(OUT + "_Figure3_without_drawings.pdf", dpi=600)
+# key drawings: Xindan's vector art (Cell cartoons/<type>_drawing.pdf), fitted in each slot, bottom-left aligned
+import pymupdf                                     # noqa: E402
+W_, H_ = fig.get_size_inches() * 72
+doc = pymupdf.open(OUT + "_Figure3_without_drawings.pdf"); pg = doc[0]
+DRAW_H = {"CHIN": 24, "CHID": 26, "OPCID": 16}     # pt; heights relative to each other as in her key
+for typ, x, y, w, h in KEY_SLOTS:
+    art = pymupdf.open(ROOT + f"Cell cartoons/{typ}_drawing.pdf"); aw, ah = art[0].rect.width, art[0].rect.height
+    s_ = min(DRAW_H[typ] / ah, w * W_ / aw)
+    x0, yb = x * W_, (1 - y) * H_ - 1                # bottom-left of the slot (PDF y runs down)
+    pg.show_pdf_page(pymupdf.Rect(x0, yb - ah * s_, x0 + aw * s_, yb), art, 0)
+for _, fn, x in CELLS:                              # panel f cells
+    art = pymupdf.open(ROOT + "Cell cartoons/" + fn); aw, ah = art[0].rect.width, art[0].rect.height
+    pg.show_pdf_page(pymupdf.Rect(x, F_TOP, x + 102, F_TOP + 102 * ah / aw), art, 0)
+ICONS3 = pymupdf.open(ROOT + "Cell cartoons/Fig3_legend_icons.pdf")       # legend icons from her figure (H-NS, AT-rich DNA)
+ICON3 = pymupdf.Rect(411.0, 604.0, 425.5, 629.5)
+pg.show_pdf_page(pymupdf.Rect(359.5, F_TOP + 10, 359.5 + ICON3.width, F_TOP + 10 + ICON3.height), ICONS3, 0)
+for k, lab in enumerate(("H-NS", "AT-rich DNA")):
+    pg.insert_text((374, F_TOP + 17 + k * 15), lab, fontsize=HS.TITLE, fontname="ArialF3",
+                   fontfile="/System/Library/Fonts/Supplemental/Arial.ttf")
+doc.save(OUT + "Figure3_hairpins.pdf", garbage=3, deflate=True)
+pg.get_pixmap(dpi=300).save(OUT + "Figure3_hairpins.png")
 print("saved")

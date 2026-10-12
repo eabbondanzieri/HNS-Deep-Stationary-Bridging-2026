@@ -1,5 +1,5 @@
 """High-resolution copies of the figures that show Loop_density_smoothed_loops images (Fig. 2, Supplementary Figs. 4, 9
-and 14), for production. The regular figures are kept small for email (raster panels resampled at 100-300 dpi).
+and 15), for production. The regular figures are kept small for email (raster panels resampled at 100-300 dpi).
 
 Each figure script is run with two changes: large images (>= 400 px on a side, i.e. the loop maps and the circle panels)
 are embedded at their own pixel resolution (interpolation "none": no resampling), and PDFs are saved at 600 dpi.
@@ -32,7 +32,7 @@ FIGS = [("updated figures/figure2.py", "updated figures/Figure2.pdf",
         ("updated figures/figureS7_timecourse.py", "updated figures/FigureS7_timecourse.pdf",
          ("Supplementary Figures", "Supplementary_Figure_09_looping_time_course"), "Supplementary Figure 9"),
         ("Supplemental_figure_Ecoli_vs_Bsub/fig_supplement_ecoli_vs_bsub.py", "Supplemental_figure_Ecoli_vs_Bsub/FigS_Ecoli_vs_Bsub_draft.pdf",
-         ("Supplementary Figures", "Supplementary_Figure_14_Ecoli_vs_Bsubtilis"), "Supplementary Figure 14")]
+         ("Supplementary Figures", "Supplementary_Figure_15_Ecoli_vs_Bsubtilis"), "Supplementary Figure 15")]   # renumbered 2026-10-12
 
 PATCH = r'''
 import sys, runpy, numpy as np, matplotlib
@@ -71,6 +71,6 @@ for script, src, (folder, name), label in FIGS:
     run(script, patched=True)
     os.makedirs(PU + folder + "/high_res", exist_ok=True)
     dst = PU + folder + f"/high_res/{name}_high_res.pdf"
-    subprocess.run(["swift", TOOLS + "add_label_pdf.swift", B + src, dst, label], check=True, capture_output=True)
+    subprocess.run(["swift", TOOLS + "add_label_pdf.swift", B + src, dst, label], check=True, capture_output=True)   # Arial Bold label
     print(f"{label}: {os.path.getsize(dst) / 1e6:.1f} MB -> {dst}")
     run(script, patched=False)                       # restore the regular (email-size) figure files

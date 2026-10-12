@@ -293,7 +293,7 @@ for i, zv in enumerate([0, 1, 2, 3, 4]):
 for f_ in (fig1, fig2):
     HS.check(f_)
 with PdfPages(CMP + "FigS_method_comparison.pdf") as pp:      # two pages: a-d, e-h
-    pp.savefig(fig1); pp.savefig(fig2)
+    pp.savefig(fig1, dpi=300); pp.savefig(fig2, dpi=300)
 fig1.savefig(CMP + "FigS_method_comparison.png", dpi=300)
 fig2.savefig(CMP + "FigS_method_comparison_p2.png", dpi=300)
 print("saved")
