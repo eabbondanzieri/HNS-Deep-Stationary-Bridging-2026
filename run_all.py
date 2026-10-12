@@ -5,7 +5,7 @@ Usage: python run_all.py [--list] [--from STEP] [--only STEP ...]"""
 import argparse, os, subprocess, sys, time
 ROOT = os.environ.get("HNS_ROOT", os.path.dirname(os.path.abspath(__file__)))
 PY = sys.executable
-B, UF, CMP, NUD = "Bactoloops", "Bactoloops/updated figures", "Bactoloops/Comparisons", "Bactoloops/Nudler CHIN paper"
+B, UF, CMP, NUD = "Bactoloops", "Bactoloops/updated figures", "Bactoloops/Comparisons", "Bactoloops/Gavrilov2025_MicroC"
 DUG, DGL, SB = "Bactoloops/Dugar et al data", "Bactoloops/Dugar et al data/loop_network_analysis", "Bactoloops/Supplemental_figure_Ecoli_vs_Bsub"
 STEPS = [  # (name, folder, command)
     # 1. inputs: contact maps, ChIP-seq and RNA-seq tracks

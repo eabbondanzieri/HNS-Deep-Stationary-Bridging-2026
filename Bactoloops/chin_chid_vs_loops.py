@@ -1,5 +1,5 @@
 """Exponential-phase CHINs and CHIDs (Gavrilov, Shamovsky et al. 2025; Micro-C, MG1655 LB) vs deep-stationary loops.
-Elements: Nudler CHIN paper/opcidsRenamed.xlsx, lab-genome coordinates (typos fixed as in chin_analysis.py).
+Elements: Gavrilov2025_MicroC/opcidsRenamed.xlsx, lab-genome coordinates (typos fixed as in chin_analysis.py).
 Density: bp covered by each element type in every 10-kb bin. Pearson r with the WT 96 h ILD and anti-H-NS ChIP z (96 h) and
 the anti-mCherry exp ChIP z, exact circular-shift P (shifts >= 20 bins). Anchors: WT 96 h loop ends merged across adjacent
 bins; overlap = element within one bin of an anchor, rotation null over every offset (rotation_test.shifts).
@@ -20,7 +20,7 @@ import numpy as np, pandas as pd
 B = HNS_ROOT + "Bactoloops/"
 sys.path.insert(0, B); import rotation_test as RT
 N, BIN = 461, 10000
-X = pd.read_excel(B + "Nudler CHIN paper/opcidsRenamed.xlsx", 0)
+X = pd.read_excel(B + "Gavrilov2025_MicroC/opcidsRenamed.xlsx", 0)
 X.loc[X.OPCID_ID == "OPCID_40", "start_new"] = 2_522_632; X.loc[X.OPCID_ID == "CHID_20", "end_new"] = 3_950_261
 X = X.dropna(subset=["start_new", "end_new"]); X["type"] = X.OPCID_ID.str.split("_").str[0]
 X["s"], X["e"] = X[["start_new", "end_new"]].min(1).astype(int), X[["start_new", "end_new"]].max(1).astype(int)

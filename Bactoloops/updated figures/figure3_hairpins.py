@@ -2,13 +2,13 @@
 (Panels i-m of the previous Supplementary Fig. 9, moved to the main text on 2026-10-06.)
 
   a  genome tracks (z-scores, 10-kb bins): WT 96 h ILD, anti-H-NS ChIP-seq (96 h), and the density (bp per bin) of the
-     exponential-phase CHINs, CHIDs and OPCIDs of Gavrilov, Shamovsky et al. 2025 (Nudler CHIN paper/opcidsRenamed.xlsx, lab
+     exponential-phase CHINs, CHIDs and OPCIDs of Gavrilov, Shamovsky et al. 2025 (Gavrilov2025_MicroC/opcidsRenamed.xlsx, lab
      genome); correlations in ../chin_chid_vs_loops.py
   b  aggregate contact maps (log2 O/E, balanced 500-bp maps from full valid pairs without the 5-kb cutoff) around CHINs >= 2 kb,
-     centred on the CHIN centre and rescaled by CHIN length (ends at -1, +1; Nudler CHIN paper/scaled_pileups.py), averaged over
+     centred on the CHIN centre and rescaled by CHIN length (ends at -1, +1; Gavrilov2025_MicroC/scaled_pileups.py), averaged over
      the four orientations, 2-pixel Gaussian blur, each map relative to its own mean; dashed, anti-diagonal (hairpin stem);
      WT exp, WT 96 h and dstpA 96 h pool two libraries
-  c  CHIN hairpin test on per-CHIN rescaled maps (Nudler CHIN paper/scaled_stem_test.py); median over CHINs, bootstrap 95% CI,
+  c  CHIN hairpin test on per-CHIN rescaled maps (Gavrilov2025_MicroC/scaled_stem_test.py); median over CHINs, bootstrap 95% CI,
      Wilcoxon P; brackets, paired WT vs dhns comparisons on the same CHINs; circles, two libraries pooled; diamonds, one library
   d  CHIDs: within-domain O/E vs same-size neighbouring windows (median over CHIDs; s9_fullpairs_stats.py)
   e  control: OPCIDs (transcription domains), same measure
@@ -83,7 +83,7 @@ fig = plt.figure(figsize=HS.size(500, FIG_H))
 outer = fig.add_gridspec(3, 1, height_ratios=[0.72, 0.5, 1.0], hspace=0.42, left=0.1, right=0.985, top=1 - 43 / FIG_H, bottom=(60 + F_PT) / FIG_H)
 _TR, _PG, _ROW = 0, 1, 2
 # a: exponential-phase CHIDs / CHINs vs deep-stationary loops and H-NS
-X = pd.read_excel(ROOT + "Nudler CHIN paper/opcidsRenamed.xlsx", 0)
+X = pd.read_excel(ROOT + "Gavrilov2025_MicroC/opcidsRenamed.xlsx", 0)
 X.loc[X.OPCID_ID == "OPCID_40", "start_new"] = 2_522_632; X.loc[X.OPCID_ID == "CHID_20", "end_new"] = 3_950_261   # sheet typos
 X = X.dropna(subset=["start_new", "end_new"]); X["type"] = X.OPCID_ID.str.split("_").str[0]
 X["s"], X["e"] = X[["start_new", "end_new"]].min(1).astype(int), X[["start_new", "end_new"]].max(1).astype(int)
@@ -142,8 +142,8 @@ _la = [t for t in ax.texts if t.get_text() == "a" and t.get_fontweight() == "bol
 _lx = fig.transFigure.inverted().transform(ax.transAxes.transform(_la.get_position()))[0]   # keep its x
 _la.set_transform(fig.transFigure); _la.set_position((_lx, _y + 24 / FIG_H)); _la.set_va("top")
 
-# b-e: short-range H-NS structure from full valid pairs (no 5-kb cutoff); replicates pooled (Nudler CHIN paper/s9_fullpairs_stats.py)
-NUD = ROOT + "Nudler CHIN paper/"
+# b-e: short-range H-NS structure from full valid pairs (no 5-kb cutoff); replicates pooled (Gavrilov2025_MicroC/s9_fullpairs_stats.py)
+NUD = ROOT + "Gavrilov2025_MicroC/"
 PZ = np.load(NUD + "scaled_pileups.npz"); SS = pd.read_csv(NUD + "s9_fullpairs_stats.csv").set_index("condition")
 from scipy.ndimage import gaussian_filter
 def _blur(M, sg=2):                                    # 2-pixel Gaussian, NaN-aware (blurred values / blurred weights)

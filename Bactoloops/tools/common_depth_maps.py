@@ -17,7 +17,7 @@ def _hns_root():
 HNS_ROOT = _hns_root()
 import subprocess, sys, os, numpy as np, pandas as pd
 ROOT = HNS_ROOT + "Bactoloops/"
-VP = ROOT + "Nudler CHIN paper/FullValidPairs/"; OUT = ROOT + "iced_matrix_conversion/common_depth/"; os.makedirs(OUT, exist_ok=True)
+VP = ROOT + "Gavrilov2025_MicroC/FullValidPairs/"; OUT = ROOT + "iced_matrix_conversion/common_depth/"; os.makedirs(OUT, exist_ok=True)
 LIBS = {"wt96_rep1": "cWX2200_96h_Azure_10percent_Sau3A_rep1", "wt96_rep2": "cWX2200_96_H_Azure10percent_Sau3AI_rep2",
         "pam96_rep2": "cWX2882_96hr_rep2", "pam96_rep3": "cWX2882_96hr_rep3"}
 BS, G = 10000, 4_607_088; NB = -(-G // BS)

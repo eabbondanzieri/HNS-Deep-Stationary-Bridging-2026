@@ -9,7 +9,7 @@ Sheets
   All_loop_calls       every Bactoloops call in every map analysed in the paper (E. coli and B. subtilis)
 
 Inputs: FIJI_output/ (rotation-invariant Bactoloops, 2026-10-06), ChIP-seq_data/zscore_wt_96h_10kb.csv,
-Nudler CHIN paper/opcidsRenamed.xlsx (CHIDs, lab genome), Spike-In/genome_positions (genes, lab genome; DESeq2 CFU).
+Gavrilov2025_MicroC/opcidsRenamed.xlsx (CHIDs, lab genome), Spike-In/genome_positions (genes, lab genome; DESeq2 CFU).
 Output: Paper Update/Supplementary Data/Supplementary_Dataset_1_loops_and_anchors.xlsx
 """
 import os as _hns_os
@@ -65,7 +65,7 @@ def matched(P, Q, tol=2, n=N):
 # ---- H-NS ChIP-seq (genome bins), CHIDs, genes ----
 z = np.full(N, np.nan)
 Z = pd.read_csv(B + "ChIP-seq_data/zscore_wt_96h_10kb.csv"); z[(Z.start_bp // BIN).values % N] = Z.zscore.values
-X = pd.read_excel(B + "Nudler CHIN paper/opcidsRenamed.xlsx", 0)
+X = pd.read_excel(B + "Gavrilov2025_MicroC/opcidsRenamed.xlsx", 0)
 X.loc[X.OPCID_ID == "OPCID_40", "start_new"] = 2_522_632; X.loc[X.OPCID_ID == "CHID_20", "end_new"] = 3_950_261
 X = X.dropna(subset=["start_new", "end_new"]); X["type"] = X.OPCID_ID.str.split("_").str[0]
 X["s"], X["e"] = X[["start_new", "end_new"]].min(1).astype(int), X[["start_new", "end_new"]].max(1).astype(int)

@@ -25,7 +25,7 @@ download them into the same tree (see [DATA.md](DATA.md)) or point `HNS_ROOT` at
 | `Bactoloops/tools/` | running Bactoloops on every map, numbers quoted in the text, Source Data, Supplementary Dataset 1 |
 | `Bactoloops/updated figures/` | Figs. 2, 3, 5 and Supplementary Figs. 2, 4, 7, 8, 9, 12; shared figure style (`house_style.py`) |
 | `Bactoloops/Comparisons/` | comparison with six published loop callers, including the rotation test (Supplementary Note 1, Supplementary Fig. 3) |
-| `Bactoloops/Nudler CHIN paper/` | short-range analysis of chromosomal hairpins (CHINs), hairpin domains (CHIDs) and OPCIDs from full valid pairs (Fig. 3) |
+| `Bactoloops/Gavrilov2025_MicroC/` | short-range analysis of the chromosomal hairpins (CHINs), hairpin domains (CHIDs), and OPCIDs defined by Micro-C in Gavrilov et al., Nature 645, 1060-1070 (2025), using our full valid pairs (Fig. 3) |
 | `Bactoloops/Dugar et al data/`, `Bactoloops/Supplemental_figure_Ecoli_vs_Bsub/`, `Bactoloops/CircularLoopArcs/` | reanalysis of *B. subtilis* Hi-C, Rok ChIP-seq, and RNA-seq (Dugar et al. 2022); Supplementary Fig. 15 |
 | `Bactoloops/` (top level) | shared statistics: exact rotation and circular-shift tests (`rotation_test.py`), baseline-corrected integrated excess (`excess_baseline.py`), H-NS at loop anchors, CHIN/CHID vs loops |
 
@@ -34,7 +34,7 @@ download them into the same tree (see [DATA.md](DATA.md)) or point `HNS_ROOT` at
 | figure | script (inputs made by) |
 |---|---|
 | Fig. 2 | `Bactoloops/updated figures/figure2.py` (cell drawings in `Bactoloops/Cell cartoons/`) |
-| Fig. 3 | `Bactoloops/updated figures/figure3_hairpins.py` (drawings in `Cell cartoons/`; `Nudler CHIN paper/scaled_pileups.py`, `scaled_stem_test.py`, `s9_fullpairs_stats.py`; `updated figures/hns_timecourse_analysis.py`; `chin_chid_vs_loops.py`) |
+| Fig. 3 | `Bactoloops/updated figures/figure3_hairpins.py` (drawings in `Cell cartoons/`; `Gavrilov2025_MicroC/scaled_pileups.py`, `scaled_stem_test.py`, `s9_fullpairs_stats.py`; `updated figures/hns_timecourse_analysis.py`; `chin_chid_vs_loops.py`) |
 | Fig. 5 | `Bactoloops/updated figures/figure4.py` (file name from an earlier numbering; `Spike-In/rerun_raw_counts/rerun_deseq2.R`, `Spike-In/make_gene_positions.py`) |
 | Fig. 7 | `Bactoloops/updated figures/figure7.py` (cell drawings in `Bactoloops/Cell cartoons/`) |
 | Supplementary Fig. 2 | `Bactoloops/updated figures/figureS2_method.py` (`tools/s2_inputs.py`) |

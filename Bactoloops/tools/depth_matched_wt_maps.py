@@ -17,7 +17,7 @@ def _hns_root():
 HNS_ROOT = _hns_root()
 import subprocess, sys, numpy as np, pandas as pd   # optional: argv[1] = target pairs, argv[2] = name tag (e.g. 5824556 m58)
 ROOT = HNS_ROOT + "Bactoloops/"
-VP = ROOT + "Nudler CHIN paper/FullValidPairs/"
+VP = ROOT + "Gavrilov2025_MicroC/FullValidPairs/"
 OUT = ROOT + "iced_matrix_conversion/depth_matched/"
 REPS = {"rep1": "cWX2200_96h_Azure_10percent_Sau3A_rep1", "rep2": "cWX2200_96_H_Azure10percent_Sau3AI_rep2"}
 TARGET = int(sys.argv[1]) if len(sys.argv) > 1 else int(round(pd.read_csv(ROOT + "iced_matrix_conversion/cWX2882_96h_Sau3AI_rep1_10000_iced.matrix", sep="\t", header=None)[2].sum() / 2))   # HiC-Pro map total = 2 x pairs
