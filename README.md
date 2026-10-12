@@ -6,7 +6,7 @@ Analysis code for
 > bioRxiv 2025.10.14.682352 (2025); doi:10.1101/2025.10.14.682352.
 
 This repository holds the Hi-C, ChIP-seq and RNA-seq analyses and the figures made from them. The loop caller, **Bactoloops**,
-is maintained separately at [eabbondanzieri/bactoloops](https://github.com/eabbondanzieri/bactoloops); the version used for the
+is maintained separately at [eabbondanzieri/bactoloops](https://github.com/eabbondanzieri/bactoloops) (v1.0.0, doi:[10.5281/zenodo.23296824](https://doi.org/10.5281/zenodo.23296824)); the version used for the
 paper is included here (`Bactoloops/HiC_PeakFindingAlgorithm_with_symmetrization.ijm`, `Bactoloops/python/`) so that the
 analysis is reproducible as published. Other code for the paper: sequencing data processing,
 [xindanwanglab/Way-HNS-2026](https://github.com/xindanwanglab/Way-HNS-2026); microscopy and single-particle tracking,
